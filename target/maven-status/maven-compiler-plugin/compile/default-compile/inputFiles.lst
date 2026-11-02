@@ -1,4 +1,10 @@
-/home/anothercoolcoder/gestion-proyectos/src/main/java/module-info.java
-/home/anothercoolcoder/gestion-proyectos/src/main/java/uptc/SecondaryController.java
-/home/anothercoolcoder/gestion-proyectos/src/main/java/uptc/App.java
-/home/anothercoolcoder/gestion-proyectos/src/main/java/uptc/PrimaryController.java
+/home/anothercoolcoder/Downloads/gestion-proyectos/src/main/java/uptc/Demo.java
+/home/anothercoolcoder/Downloads/gestion-proyectos/src/main/java/uptc/algorithm/PlanificadorService.java
+/home/anothercoolcoder/Downloads/gestion-proyectos/src/main/java/uptc/algorithm/PlanificadorServiceImpl.java
+/home/anothercoolcoder/Downloads/gestion-proyectos/src/main/java/uptc/exception/DependenciaCircularException.java
+/home/anothercoolcoder/Downloads/gestion-proyectos/src/main/java/uptc/exception/DominioException.java
+/home/anothercoolcoder/Downloads/gestion-proyectos/src/main/java/uptc/model/Actividad.java
+/home/anothercoolcoder/Downloads/gestion-proyectos/src/main/java/uptc/model/Cronograma.java
+/home/anothercoolcoder/Downloads/gestion-proyectos/src/main/java/uptc/model/Estado.java
+/home/anothercoolcoder/Downloads/gestion-proyectos/src/main/java/uptc/model/ImpactoResultado.java
+/home/anothercoolcoder/Downloads/gestion-proyectos/src/main/java/uptc/model/Proyecto.java

@@ -1,4 +1,10 @@
-uptc/App.class
-uptc/PrimaryController.class
-module-info.class
-uptc/SecondaryController.class
+uptc/model/Proyecto.class
+uptc/model/Estado.class
+uptc/model/Cronograma.class
+uptc/algorithm/PlanificadorServiceImpl.class
+uptc/model/ImpactoResultado.class
+uptc/exception/DependenciaCircularException.class
+uptc/exception/DominioException.class
+uptc/Demo.class
+uptc/model/Actividad.class
+uptc/algorithm/PlanificadorService.class

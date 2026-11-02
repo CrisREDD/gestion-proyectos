@@ -1,0 +1,10 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+gestion-proyectos,uptc.exception,DominioException,0,10,0,0,0,4,0,2,0,2
+gestion-proyectos,uptc.exception,DependenciaCircularException,0,11,0,0,0,4,0,2,0,2
+gestion-proyectos,uptc.algorithm,PlanificadorServiceImpl,0,548,4,64,0,96,4,50,0,20
+gestion-proyectos,uptc,Demo,184,96,0,0,33,16,5,1,5,1
+gestion-proyectos,uptc.model,ImpactoResultado,0,19,0,0,0,2,0,2,0,2
+gestion-proyectos,uptc.model,Cronograma,0,9,0,0,0,1,0,1,0,1
+gestion-proyectos,uptc.model,Actividad,56,87,11,9,12,24,15,10,8,7
+gestion-proyectos,uptc.model,Proyecto,31,231,7,19,8,42,13,20,6,14
+gestion-proyectos,uptc.model,Estado,0,21,0,0,0,4,0,1,0,1
