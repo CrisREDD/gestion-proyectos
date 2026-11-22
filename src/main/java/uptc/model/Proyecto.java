@@ -5,6 +5,7 @@ import uptc.exception.DominioException;
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
@@ -26,6 +27,8 @@ public class Proyecto {
     public Proyecto(String id, String nombre, LocalDate fechaInicio) {
         if (id == null || id.isBlank())
             throw new DominioException("error.proyecto.id.vacio");
+        if (!id.matches("[A-Za-z0-9_-]{1,64}"))
+            throw new DominioException("error.proyecto.id.formato");
         if (nombre == null || nombre.isBlank())
             throw new DominioException("error.proyecto.nombre.vacio");
         if (fechaInicio == null)
@@ -36,11 +39,24 @@ public class Proyecto {
     }
 
     public void agregarActividad(Actividad a) {
+        if (a == null)
+            throw new DominioException("error.actividad.inexistente");
         if (actividades.containsKey(a.getId()))
             throw new DominioException("error.actividad.duplicada");
         actividades.put(a.getId(), a);
         sucesoras.put(a.getId(), new LinkedHashSet<>());
         predecesoras.put(a.getId(), new LinkedHashSet<>());
+    }
+
+    /** Elimina una actividad y todas las aristas que llegan o salen de ella. */
+    public void eliminarActividad(String id) {
+        if (!actividades.containsKey(id))
+            throw new DominioException("error.actividad.inexistente");
+        actividades.remove(id);
+        sucesoras.remove(id);
+        predecesoras.remove(id);
+        sucesoras.values().forEach(ids -> ids.remove(id));
+        predecesoras.values().forEach(ids -> ids.remove(id));
     }
 
     /** idA -> idB significa: B necesita que A termine. */
@@ -74,13 +90,24 @@ public class Proyecto {
     public String getNombre()                      { return nombre; }
     public String getDescripcion()                 { return descripcion; }
     public LocalDate getFechaInicio()              { return fechaInicio; }
-    public void setNombre(String nombre)           { this.nombre = nombre; }
+    public void setNombre(String nombre) {
+        if (nombre == null || nombre.isBlank())
+            throw new DominioException("error.proyecto.nombre.vacio");
+        this.nombre = nombre;
+    }
     public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
-    public void setFechaInicio(LocalDate f)        { this.fechaInicio = f; }
+    public void setFechaInicio(LocalDate f) {
+        if (f == null) throw new DominioException("error.proyecto.fecha.vacia");
+        this.fechaInicio = f;
+    }
 
-    public Set<String> getIds()                    { return actividades.keySet(); }
+    public Set<String> getIds()                    { return Collections.unmodifiableSet(actividades.keySet()); }
     public Actividad getActividad(String id)       { return actividades.get(id); }
-    public Set<String> getSucesoras(String id)     { return sucesoras.get(id); }
-    public Set<String> getPredecesoras(String id)  { return predecesoras.get(id); }
+    public Set<String> getSucesoras(String id)     { return vista(sucesoras.get(id)); }
+    public Set<String> getPredecesoras(String id)  { return vista(predecesoras.get(id)); }
     public int cantidadActividades()               { return actividades.size(); }
+
+    private Set<String> vista(Set<String> ids) {
+        return ids == null ? null : Collections.unmodifiableSet(ids);
+    }
 }

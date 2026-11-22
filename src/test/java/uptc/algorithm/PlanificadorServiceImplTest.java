@@ -99,6 +99,22 @@ class PlanificadorServiceImplTest {
     }
 
     @Test
+    void cicloReportaSoloNodosDelCicloYNoSusDescendientes() {
+        Proyecto c = new Proyecto("C", "Ciclo", LocalDate.of(2026, 11, 2));
+        for (String id : List.of("A", "B", "C", "D"))
+            c.agregarActividad(new Actividad(id, id, 1));
+        c.agregarDependencia("A", "B");
+        c.agregarDependencia("B", "C");
+        c.agregarDependencia("C", "A");
+        c.agregarDependencia("C", "D"); // D no forma parte del ciclo
+
+        DependenciaCircularException ex = assertThrows(DependenciaCircularException.class,
+                () -> plan.ordenEjecucion(c));
+        assertEquals(List.of("A", "B", "C"), ex.getIdsInvolucrados());
+    }
+
+
+    @Test
     void existeCaminoConActividadInexistenteLanzaExcepcion() {
         DominioException ex = assertThrows(DominioException.class, () -> plan.existeCamino(p, "A", "Z"));
         assertEquals("error.actividad.inexistente", ex.getClave());

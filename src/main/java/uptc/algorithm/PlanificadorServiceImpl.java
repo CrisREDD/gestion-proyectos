@@ -27,7 +27,7 @@ public class PlanificadorServiceImpl implements PlanificadorService {
         }
 
         if (orden.size() < p.cantidadActividades())
-            throw new DependenciaCircularException(pendientes(grado));
+            throw new DependenciaCircularException(cicloExacto(p));
         return orden;
     }
 
@@ -58,7 +58,7 @@ public class PlanificadorServiceImpl implements PlanificadorService {
         }
 
         if (procesadas < p.cantidadActividades())
-            throw new DependenciaCircularException(pendientes(grado));
+            throw new DependenciaCircularException(cicloExacto(p));
         return niveles;
     }
 
@@ -164,10 +164,34 @@ public class PlanificadorServiceImpl implements PlanificadorService {
         return grado;
     }
 
-    private List<String> pendientes(Map<String, Integer> grado) {
-        List<String> res = new ArrayList<>();
-        grado.forEach((id, g) -> { if (g > 0) res.add(id); });
-        return res;
+    /** DFS de colores: devuelve solo los nodos de un ciclo, sin arrastrar sus descendientes. */
+    private List<String> cicloExacto(Proyecto p) {
+        Map<String, Integer> color = new HashMap<>(); // 0 blanco, 1 gris, 2 negro
+        List<String> camino = new ArrayList<>();
+        for (String id : p.getIds()) {
+            List<String> ciclo = buscarCiclo(p, id, color, camino);
+            if (ciclo != null) return ciclo;
+        }
+        return List.of();
+    }
+
+    private List<String> buscarCiclo(Proyecto p, String id, Map<String, Integer> color,
+                                     List<String> camino) {
+        int estado = color.getOrDefault(id, 0);
+        if (estado == 2) return null;
+        if (estado == 1) {
+            int inicio = camino.indexOf(id);
+            return new ArrayList<>(camino.subList(inicio, camino.size()));
+        }
+        color.put(id, 1);
+        camino.add(id);
+        for (String suc : p.getSucesoras(id)) {
+            List<String> ciclo = buscarCiclo(p, suc, color, camino);
+            if (ciclo != null) return ciclo;
+        }
+        camino.remove(camino.size() - 1);
+        color.put(id, 2);
+        return null;
     }
 
     private ImpactoResultado comparar(Proyecto p,

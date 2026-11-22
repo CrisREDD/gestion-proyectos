@@ -15,6 +15,8 @@ public class Actividad {
     public Actividad(String id, String nombre, int duracionDias) {
         if (id == null || id.isBlank())
             throw new DominioException("error.actividad.id.vacio");
+        if (!id.matches("[A-Za-z0-9_-]{1,64}"))
+            throw new DominioException("error.actividad.id.formato");
         if (nombre == null || nombre.isBlank())
             throw new DominioException("error.actividad.nombre.vacio");
         if (duracionDias <= 0)
