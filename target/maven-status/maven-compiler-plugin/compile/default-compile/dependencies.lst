@@ -1,0 +1,12 @@
+classpath:C:\Users\andre\.m2\repository\org\openjfx\javafx-controls\21.0.2\javafx-controls-21.0.2.jar	306:1795391572211
+classpath:C:\Users\andre\.m2\repository\org\openjfx\javafx-graphics\21.0.2\javafx-graphics-21.0.2.jar	306:1795391572295
+classpath:C:\Users\andre\.m2\repository\org\openjfx\javafx-base\21.0.2\javafx-base-21.0.2.jar	302:1795391572352
+classpath:C:\Users\andre\.m2\repository\org\openjfx\javafx-fxml\21.0.2\javafx-fxml-21.0.2.jar	302:1795391572506
+modulepath:C:\Users\andre\.m2\repository\com\fasterxml\jackson\core\jackson-databind\2.17.1\jackson-databind-2.17.1.jar	1649385:1795391572182
+modulepath:C:\Users\andre\.m2\repository\com\fasterxml\jackson\core\jackson-annotations\2.17.1\jackson-annotations-2.17.1.jar	78491:1795391572100
+modulepath:C:\Users\andre\.m2\repository\com\fasterxml\jackson\core\jackson-core\2.17.1\jackson-core-2.17.1.jar	581860:1795391572204
+modulepath:C:\Users\andre\.m2\repository\com\fasterxml\jackson\datatype\jackson-datatype-jsr310\2.17.1\jackson-datatype-jsr310-2.17.1.jar	132263:1795391572147
+modulepath:C:\Users\andre\.m2\repository\org\openjfx\javafx-controls\21.0.2\javafx-controls-21.0.2-win.jar	2585130:1795391572595
+modulepath:C:\Users\andre\.m2\repository\org\openjfx\javafx-graphics\21.0.2\javafx-graphics-21.0.2-win.jar	5940144:1795391572952
+modulepath:C:\Users\andre\.m2\repository\org\openjfx\javafx-base\21.0.2\javafx-base-21.0.2-win.jar	753984:1795391572490
+modulepath:C:\Users\andre\.m2\repository\org\openjfx\javafx-fxml\21.0.2\javafx-fxml-21.0.2-win.jar	130176:1795391572557

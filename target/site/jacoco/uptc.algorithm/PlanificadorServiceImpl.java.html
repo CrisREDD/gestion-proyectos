@@ -27,7 +27,7 @@ import java.util.*;
 <span class="fc" id="L27">        }</span>
 
 <span class="fc bfc" id="L29" title="All 2 branches covered.">        if (orden.size() &lt; p.cantidadActividades())</span>
-<span class="fc" id="L30">            throw new DependenciaCircularException(pendientes(grado));</span>
+<span class="fc" id="L30">            throw new DependenciaCircularException(cicloExacto(p));</span>
 <span class="fc" id="L31">        return orden;</span>
     }
 
@@ -58,7 +58,7 @@ import java.util.*;
 <span class="fc" id="L58">        }</span>
 
 <span class="fc bfc" id="L60" title="All 2 branches covered.">        if (procesadas &lt; p.cantidadActividades())</span>
-<span class="fc" id="L61">            throw new DependenciaCircularException(pendientes(grado));</span>
+<span class="fc" id="L61">            throw new DependenciaCircularException(cicloExacto(p));</span>
 <span class="fc" id="L62">        return niveles;</span>
     }
 
@@ -164,18 +164,42 @@ import java.util.*;
 <span class="fc" id="L164">        return grado;</span>
     }
 
-    private List&lt;String&gt; pendientes(Map&lt;String, Integer&gt; grado) {
-<span class="fc" id="L168">        List&lt;String&gt; res = new ArrayList&lt;&gt;();</span>
-<span class="pc bpc" id="L169" title="1 of 2 branches missed.">        grado.forEach((id, g) -&gt; { if (g &gt; 0) res.add(id); });</span>
-<span class="fc" id="L170">        return res;</span>
+    /** DFS de colores: devuelve solo los nodos de un ciclo, sin arrastrar sus descendientes. */
+    private List&lt;String&gt; cicloExacto(Proyecto p) {
+<span class="fc" id="L169">        Map&lt;String, Integer&gt; color = new HashMap&lt;&gt;(); // 0 blanco, 1 gris, 2 negro</span>
+<span class="fc" id="L170">        List&lt;String&gt; camino = new ArrayList&lt;&gt;();</span>
+<span class="pc bpc" id="L171" title="1 of 2 branches missed.">        for (String id : p.getIds()) {</span>
+<span class="fc" id="L172">            List&lt;String&gt; ciclo = buscarCiclo(p, id, color, camino);</span>
+<span class="pc bpc" id="L173" title="1 of 2 branches missed.">            if (ciclo != null) return ciclo;</span>
+<span class="nc" id="L174">        }</span>
+<span class="nc" id="L175">        return List.of();</span>
+    }
+
+    private List&lt;String&gt; buscarCiclo(Proyecto p, String id, Map&lt;String, Integer&gt; color,
+                                     List&lt;String&gt; camino) {
+<span class="fc" id="L180">        int estado = color.getOrDefault(id, 0);</span>
+<span class="pc bpc" id="L181" title="1 of 2 branches missed.">        if (estado == 2) return null;</span>
+<span class="fc bfc" id="L182" title="All 2 branches covered.">        if (estado == 1) {</span>
+<span class="fc" id="L183">            int inicio = camino.indexOf(id);</span>
+<span class="fc" id="L184">            return new ArrayList&lt;&gt;(camino.subList(inicio, camino.size()));</span>
+        }
+<span class="fc" id="L186">        color.put(id, 1);</span>
+<span class="fc" id="L187">        camino.add(id);</span>
+<span class="pc bpc" id="L188" title="1 of 2 branches missed.">        for (String suc : p.getSucesoras(id)) {</span>
+<span class="fc" id="L189">            List&lt;String&gt; ciclo = buscarCiclo(p, suc, color, camino);</span>
+<span class="pc bpc" id="L190" title="1 of 2 branches missed.">            if (ciclo != null) return ciclo;</span>
+<span class="nc" id="L191">        }</span>
+<span class="nc" id="L192">        camino.remove(camino.size() - 1);</span>
+<span class="nc" id="L193">        color.put(id, 2);</span>
+<span class="nc" id="L194">        return null;</span>
     }
 
     private ImpactoResultado comparar(Proyecto p,
                                       Map&lt;String, Cronograma&gt; antes,
                                       Map&lt;String, Cronograma&gt; despues) {
-<span class="fc" id="L176">        List&lt;String&gt; afectadas = new ArrayList&lt;&gt;();</span>
-<span class="fc bfc" id="L177" title="All 2 branches covered.">        antes.forEach((id, c) -&gt; { if (!c.equals(despues.get(id))) afectadas.add(id); });</span>
-<span class="fc" id="L178">        return new ImpactoResultado(fechaFin(p, antes), fechaFin(p, despues), afectadas);</span>
+<span class="fc" id="L200">        List&lt;String&gt; afectadas = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L201" title="All 2 branches covered.">        antes.forEach((id, c) -&gt; { if (!c.equals(despues.get(id))) afectadas.add(id); });</span>
+<span class="fc" id="L202">        return new ImpactoResultado(fechaFin(p, antes), fechaFin(p, despues), afectadas);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

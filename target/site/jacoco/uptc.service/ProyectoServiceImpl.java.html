@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ProyectoServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">gestion-proyectos</a> &gt; <a href="index.source.html" class="el_package">uptc.service</a> &gt; <span class="el_source">ProyectoServiceImpl.java</span></div><h1>ProyectoServiceImpl.java</h1><pre class="source lang-java linenums">package uptc.service;
+
+import uptc.algorithm.PlanificadorService;
+import uptc.exception.DominioException;
+import uptc.exception.PersistenciaException;
+import uptc.model.Actividad;
+import uptc.model.Cronograma;
+import uptc.model.Estado;
+import uptc.model.ImpactoResultado;
+import uptc.model.Proyecto;
+import uptc.persistence.ProyectoRepository;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+/** Implementación de los casos de uso de proyectos. */
+public class ProyectoServiceImpl implements ProyectoService {
+    private final ProyectoRepository repositorio;
+    private final PlanificadorService planificador;
+<span class="fc" id="L24">    private final Map&lt;String, Proyecto&gt; proyectos = new LinkedHashMap&lt;&gt;();</span>
+
+<span class="fc" id="L26">    public ProyectoServiceImpl(ProyectoRepository repositorio, PlanificadorService planificador) {</span>
+<span class="pc bpc" id="L27" title="2 of 4 branches missed.">        if (repositorio == null || planificador == null) {</span>
+<span class="nc" id="L28">            throw new IllegalArgumentException(&quot;repositorio y planificador son obligatorios&quot;);</span>
+        }
+<span class="fc" id="L30">        this.repositorio = repositorio;</span>
+<span class="fc" id="L31">        this.planificador = planificador;</span>
+<span class="fc" id="L32">        cargarDesdeRepositorio();</span>
+<span class="fc" id="L33">    }</span>
+
+    @Override
+    public Proyecto crearProyecto(String nombre, String descripcion, LocalDate inicio) {
+<span class="pc bpc" id="L37" title="2 of 4 branches missed.">        if (nombre == null || nombre.isBlank()) {</span>
+<span class="nc" id="L38">            throw new DominioException(&quot;error.proyecto.nombre.vacio&quot;);</span>
+        }
+<span class="pc bpc" id="L40" title="1 of 2 branches missed.">        if (inicio == null) {</span>
+<span class="nc" id="L41">            throw new DominioException(&quot;error.proyecto.fecha.vacia&quot;);</span>
+        }
+<span class="fc" id="L43">        String id = siguienteId();</span>
+<span class="fc" id="L44">        Proyecto proyecto = new Proyecto(id, nombre, inicio);</span>
+<span class="fc" id="L45">        proyecto.setDescripcion(descripcion);</span>
+<span class="fc" id="L46">        proyectos.put(id, proyecto);</span>
+<span class="fc" id="L47">        repositorio.guardar(proyecto);</span>
+<span class="fc" id="L48">        return proyecto;</span>
+    }
+
+    @Override
+    public List&lt;Proyecto&gt; listarProyectos() {
+<span class="fc" id="L53">        return List.copyOf(proyectos.values());</span>
+    }
+
+    @Override
+    public void actualizarProyecto(Proyecto proyecto) {
+<span class="pc bpc" id="L58" title="3 of 6 branches missed.">        if (proyecto == null || proyecto.getId() == null || proyecto.getId().isBlank()) {</span>
+<span class="nc" id="L59">            throw new DominioException(&quot;error.proyecto.id.vacio&quot;);</span>
+        }
+<span class="fc" id="L61">        exigirProyecto(proyecto.getId());</span>
+<span class="fc" id="L62">        proyectos.put(proyecto.getId(), proyecto);</span>
+<span class="fc" id="L63">        repositorio.guardar(proyecto);</span>
+<span class="fc" id="L64">    }</span>
+
+    @Override
+    public void eliminarProyecto(String id) {
+<span class="fc" id="L68">        exigirProyecto(id);</span>
+<span class="fc" id="L69">        proyectos.remove(id);</span>
+<span class="fc" id="L70">        repositorio.eliminar(id);</span>
+<span class="fc" id="L71">    }</span>
+
+    @Override
+    public Actividad agregarActividad(String idProyecto, Actividad actividad) {
+<span class="fc" id="L75">        Proyecto proyecto = exigirProyecto(idProyecto);</span>
+<span class="pc bpc" id="L76" title="1 of 2 branches missed.">        if (actividad == null) {</span>
+<span class="nc" id="L77">            throw new DominioException(&quot;error.actividad.inexistente&quot;);</span>
+        }
+<span class="fc" id="L79">        proyecto.agregarActividad(actividad);</span>
+<span class="fc" id="L80">        repositorio.guardar(proyecto);</span>
+<span class="fc" id="L81">        return actividad;</span>
+    }
+
+    @Override
+    public void agregarDependencia(String idProyecto, String idPred, String idSuc) {
+<span class="fc" id="L86">        Proyecto proyecto = exigirProyecto(idProyecto);</span>
+<span class="fc" id="L87">        exigirActividad(proyecto, idPred);</span>
+<span class="fc" id="L88">        exigirActividad(proyecto, idSuc);</span>
+<span class="pc bpc" id="L89" title="1 of 2 branches missed.">        if (idPred.equals(idSuc)) {</span>
+<span class="nc" id="L90">            throw new DominioException(&quot;error.dependencia.autoreferencia&quot;);</span>
+        }
+<span class="pc bpc" id="L92" title="1 of 2 branches missed.">        if (proyecto.getSucesoras(idPred).contains(idSuc)) {</span>
+<span class="nc" id="L93">            throw new DominioException(&quot;error.dependencia.duplicada&quot;);</span>
+        }
+<span class="fc bfc" id="L95" title="All 2 branches covered.">        if (planificador.cerrariaCiclo(proyecto, idPred, idSuc)) {</span>
+<span class="fc" id="L96">            throw new DominioException(&quot;error.dependencia.circular&quot;);</span>
+        }
+<span class="fc" id="L98">        proyecto.agregarDependencia(idPred, idSuc);</span>
+<span class="fc" id="L99">        repositorio.guardar(proyecto);</span>
+<span class="fc" id="L100">    }</span>
+
+    @Override
+    public void eliminarDependencia(String idProyecto, String idPred, String idSuc) {
+<span class="nc" id="L104">        Proyecto proyecto = exigirProyecto(idProyecto);</span>
+<span class="nc" id="L105">        proyecto.eliminarDependencia(idPred, idSuc);</span>
+<span class="nc" id="L106">        repositorio.guardar(proyecto);</span>
+<span class="nc" id="L107">    }</span>
+
+    @Override
+    public void registrarAvance(String idProyecto, String idAct, Estado nuevoEstado) {
+<span class="fc" id="L111">        Proyecto proyecto = exigirProyecto(idProyecto);</span>
+<span class="fc" id="L112">        Actividad actividad = exigirActividad(proyecto, idAct);</span>
+<span class="pc bpc" id="L113" title="1 of 2 branches missed.">        if (nuevoEstado == null) {</span>
+<span class="nc" id="L114">            throw new DominioException(&quot;error.estado.invalido&quot;);</span>
+        }
+<span class="pc bpc" id="L116" title="1 of 2 branches missed.">        if (nuevoEstado == Estado.DONE &amp;&amp; proyecto.getPredecesoras(idAct).stream()</span>
+<span class="fc bfc" id="L117" title="All 4 branches covered.">                .anyMatch(pred -&gt; proyecto.getActividad(pred).getEstado() != Estado.DONE)) {</span>
+<span class="fc" id="L118">            throw new DominioException(&quot;error.actividad.predecesora.pendiente&quot;);</span>
+        }
+<span class="fc" id="L120">        actividad.setEstado(nuevoEstado);</span>
+<span class="fc" id="L121">        repositorio.guardar(proyecto);</span>
+<span class="fc" id="L122">    }</span>
+
+    @Override
+    public List&lt;Actividad&gt; ordenEjecucion(String idProyecto) {
+<span class="fc" id="L126">        return planificador.ordenEjecucion(exigirProyecto(idProyecto));</span>
+    }
+
+    @Override
+    public Map&lt;String, Cronograma&gt; cronograma(String idProyecto) {
+<span class="fc" id="L131">        return planificador.calcularFechas(exigirProyecto(idProyecto));</span>
+    }
+
+    @Override
+    public ImpactoResultado simularCambioDuracion(String idProyecto, String idAct, int dias) {
+<span class="fc" id="L136">        return planificador.impactoCambioDuracion(exigirProyecto(idProyecto), idAct, dias);</span>
+    }
+
+    @Override
+    public ImpactoResultado simularEliminarDependencia(String idProyecto, String idPred, String idSuc) {
+<span class="fc" id="L141">        return planificador.impactoEliminarDependencia(exigirProyecto(idProyecto), idPred, idSuc);</span>
+    }
+
+    private void cargarDesdeRepositorio() {
+        try {
+<span class="fc bfc" id="L146" title="All 2 branches covered.">            for (Proyecto proyecto : repositorio.cargarTodos()) {</span>
+<span class="pc bpc" id="L147" title="3 of 6 branches missed.">                if (proyecto == null || proyecto.getId() == null || proyecto.getId().isBlank()) {</span>
+<span class="nc" id="L148">                    throw new PersistenciaException(&quot;error.persistencia.archivo.corrupto&quot;);</span>
+                }
+<span class="fc" id="L150">                proyectos.put(proyecto.getId(), proyecto);</span>
+<span class="fc" id="L151">            }</span>
+<span class="fc" id="L152">        } catch (PersistenciaException e) {</span>
+<span class="fc bfc" id="L153" title="All 2 branches covered.">            if (!&quot;error.persistencia.archivo.inexistente&quot;.equals(e.getClave())) {</span>
+<span class="fc" id="L154">                throw e;</span>
+            }
+<span class="fc" id="L156">        }</span>
+<span class="fc" id="L157">    }</span>
+
+    private String siguienteId() {
+<span class="fc" id="L160">        int siguiente = 1;</span>
+<span class="pc bpc" id="L161" title="1 of 2 branches missed.">        while (proyectos.containsKey(&quot;P&quot; + siguiente)) {</span>
+<span class="nc" id="L162">            siguiente++;</span>
+        }
+<span class="fc" id="L164">        return &quot;P&quot; + siguiente;</span>
+    }
+
+    private Proyecto exigirProyecto(String id) {
+<span class="fc" id="L168">        Proyecto proyecto = proyectos.get(id);</span>
+<span class="pc bpc" id="L169" title="1 of 2 branches missed.">        if (proyecto == null) {</span>
+<span class="nc" id="L170">            throw new DominioException(&quot;error.proyecto.inexistente&quot;);</span>
+        }
+<span class="fc" id="L172">        return proyecto;</span>
+    }
+
+    private Actividad exigirActividad(Proyecto proyecto, String id) {
+<span class="fc" id="L176">        Actividad actividad = proyecto.getActividad(id);</span>
+<span class="pc bpc" id="L177" title="1 of 2 branches missed.">        if (actividad == null) {</span>
+<span class="nc" id="L178">            throw new DominioException(&quot;error.actividad.inexistente&quot;);</span>
+        }
+<span class="fc" id="L180">        return actividad;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
