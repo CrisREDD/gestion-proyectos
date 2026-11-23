@@ -42,7 +42,7 @@ public final class SummaryPane extends VBox {
 
     private void addCard(String title, String value, int col, int row) {
         VBox card = new VBox(3, new Label(title), new Label(value));
-        card.setStyle("-fx-background-color: white; -fx-padding: 10; -fx-border-color: #cbd5e1; -fx-border-radius: 5;");
+        card.getStyleClass().addAll("card", col == 0 ? "card-brand" : col == 1 ? "card-success" : col == 2 ? "card-warning" : "card-danger");
         cards.add(card, col, row);
     }
 }

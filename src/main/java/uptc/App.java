@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import uptc.controller.algorithm.PlanificadorServiceImpl;
 import uptc.exception.DominioException;
@@ -27,6 +28,8 @@ public class App extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         this.stage = stage;
+        var icon = App.class.getResourceAsStream("/uptc/images/logo.svg");
+        if (icon != null) stage.getIcons().add(new Image(icon));
         try {
             boolean demo = getParameters().getRaw().contains("--demo")
                     || Boolean.getBoolean("uptc.demo");

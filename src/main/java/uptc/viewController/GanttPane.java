@@ -30,7 +30,8 @@ public final class GanttPane extends VBox {
             Cronograma c = schedule.get(id); if (c == null) continue;
             long days = Math.max(1, ChronoUnit.DAYS.between(c.inicio(), c.fin()));
             Label name = new Label(id + "  " + project.getActividad(id).getNombre()); name.setPrefWidth(190);
-            Rectangle bar = new Rectangle(Math.max(30, 520.0 * days / total), 22, Color.web("#2563eb"));
+            Rectangle bar = new Rectangle(Math.max(30, 520.0 * days / total), 22);
+            bar.getStyleClass().add("gantt-bar");
             Label dates = new Label(c.inicio() + " → " + c.fin());
             HBox row = new HBox(8, name, bar, dates); row.setPadding(new Insets(2));
             getChildren().add(row);

@@ -26,7 +26,7 @@ public final class DependencyGraphPane extends Pane {
     public DependencyGraphPane(PlanificadorService planner) {
         this.planner = planner;
         setMinSize(700, 420);
-        setStyle("-fx-background-color: #f8fafc;");
+        getStyleClass().add("dependency-graph");
     }
 
     /** Dibuja el proyecto y devuelve el nodo seleccionado mediante el listener indicado. */
@@ -55,9 +55,9 @@ public final class DependencyGraphPane extends Pane {
                 double[] a = centers.get(from), b = centers.get(to);
                 if (a == null || b == null) continue;
                 Line line = new Line(a[0], a[1], b[0], b[1]);
-                line.setStroke(Color.web("#94a3b8")); line.setStrokeWidth(1.5);
+                line.getStyleClass().add("graph-edge");
                 Polygon arrow = new Polygon(b[0], b[1], b[0] - 8, b[1] - 4, b[0] - 8, b[1] + 4);
-                arrow.setFill(Color.web("#64748b"));
+                arrow.getStyleClass().add("graph-edge");
                 getChildren().addAll(0, List.of(line, arrow));
             }
         }
@@ -69,14 +69,14 @@ public final class DependencyGraphPane extends Pane {
         Label state = new Label(activity.getEstado().name());
         VBox box = new VBox(3, title, state);
         box.setPadding(new Insets(8)); box.setPrefWidth(140); box.setPrefHeight(45);
-        box.setStyle("-fx-background-color: " + color(activity.getEstado())
-                + "; -fx-border-color: " + (cycle ? "#dc2626" : "#64748b")
-                + "; -fx-border-width: " + (cycle ? "3" : "1") + "; -fx-border-radius: 5; -fx-background-radius: 5;");
+        box.getStyleClass().add("graph-node");
+        box.getStyleClass().add(switch (activity.getEstado()) {
+            case TODO -> "graph-node-todo";
+            case IN_PROGRESS -> "graph-node-progress";
+            case DONE -> "graph-node-done";
+        });
+        if (cycle) box.getStyleClass().add("graph-node-cycle");
         box.setOnMouseClicked(e -> listener.accept(activity));
         return box;
-    }
-
-    private String color(Estado state) {
-        return switch (state) { case TODO -> "#e2e8f0"; case IN_PROGRESS -> "#fef3c7"; case DONE -> "#bbf7d0"; };
     }
 }

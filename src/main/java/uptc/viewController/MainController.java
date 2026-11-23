@@ -13,6 +13,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.shape.SVGPath;
 import javafx.geometry.Insets;
 import javafx.util.StringConverter;
 import uptc.exception.DominioException;
@@ -85,6 +86,9 @@ public class MainController {
     }
 
     private Node construirCabecera() {
+        SVGPath logo = new SVGPath();
+        logo.setContent("M4 20 L14 7 L25 25 M4 20 L25 25 M4 20 A3 3 0 1 0 4.1 20 M14 7 A3 3 0 1 0 14.1 7 M25 25 A3 3 0 1 0 25.1 25");
+        logo.getStyleClass().add("brand-logo");
         Label title = new Label(tr("app.title"));
         title.getStyleClass().add("title");
         selectorProyecto = new ComboBox<>();
@@ -117,7 +121,7 @@ public class MainController {
         Button nuevoProyecto = button("project.new", e -> crearProyecto());
         Button cargarEjemplo = button("project.loadExample", e -> cargarEjemplo());
         Button tema = button("theme.toggle", e -> alternarTema());
-        HBox fila = new HBox(12, title, selectorProyecto, nuevoProyecto, cargarEjemplo, idioma, tema);
+        HBox fila = new HBox(8, logo, title, selectorProyecto, nuevoProyecto, cargarEjemplo, idioma, tema);
         fila.setPadding(new Insets(0, 0, 14, 0));
         HBox.setHgrow(selectorProyecto, Priority.ALWAYS);
         return fila;
@@ -375,7 +379,15 @@ public class MainController {
     }
 
     private Button button(String key, javafx.event.EventHandler<javafx.event.ActionEvent> action) {
-        Button button = new Button(tr(key)); button.setOnAction(action); return button;
+        Button button = new Button(tr(key));
+        button.setOnAction(action);
+        String style = key.equals("theme.toggle") ? "btn-icon"
+                : key.contains("delete") || key.contains("remove") ? "btn-danger"
+                : key.contains("apply") ? "btn-success"
+                : key.contains("edit") || key.contains("loadExample") || key.contains("simulate") ? "btn-secondary"
+                : "btn-primary";
+        button.getStyleClass().add(style);
+        return button;
     }
 
     private void crearProyecto() {
