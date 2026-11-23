@@ -5,34 +5,82 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import uptc.algorithm.PlanificadorServiceImpl;
+import uptc.exception.DominioException;
+import uptc.exception.PersistenciaException;
+import uptc.persistence.JsonProyectoRepository;
+import uptc.service.ProyectoService;
+import uptc.service.ProyectoServiceImpl;
+import uptc.service.ProyectoServiceStub;
+import uptc.ui.MainController;
 
-import java.io.IOException;
+import java.nio.file.Path;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
-/**
- * JavaFX App
- */
+/** Punto de entrada JavaFX y ensamblado de dependencias. */
 public class App extends Application {
-
-    private static Scene scene;
+    private Stage stage;
+    private ProyectoService proyectoService;
+    private Locale locale = Locale.forLanguageTag("es");
 
     @Override
-    public void start(Stage stage) throws IOException {
-        scene = new Scene(loadFXML("primary"), 640, 480);
-        stage.setScene(scene);
+    public void start(Stage stage) throws Exception {
+        this.stage = stage;
+        try {
+            boolean demo = getParameters().getRaw().contains("--demo")
+                    || Boolean.getBoolean("uptc.demo");
+            if (demo) {
+                proyectoService = new ProyectoServiceStub();
+            } else {
+                Path archivo = Path.of(System.getProperty("user.home"), ".gestion-proyectos", "proyectos.json");
+                proyectoService = new ProyectoServiceImpl(new JsonProyectoRepository(archivo),
+                        new PlanificadorServiceImpl());
+            }
+            mostrarVentana();
+        } catch (RuntimeException e) {
+            mostrarError(e, locale);
+            stage.close();
+        }
+    }
+
+    private void mostrarVentana() throws Exception {
+        ResourceBundle bundle = ResourceBundle.getBundle("uptc.i18n.messages", locale);
+        FXMLLoader loader = new FXMLLoader(App.class.getResource("/uptc/ui/main.fxml"), bundle);
+        Parent root = loader.load();
+        root.getStylesheets().add(App.class.getResource("/uptc/ui/styles.css").toExternalForm());
+        MainController controller = loader.getController();
+        controller.configure(proyectoService, bundle, this::cambiarIdioma);
+        stage.setTitle(bundle.getString("app.title"));
+        stage.setMinWidth(900);
+        stage.setMinHeight(620);
+        stage.setScene(new Scene(root, 1180, 760));
         stage.show();
     }
 
-    static void setRoot(String fxml) throws IOException {
-        scene.setRoot(loadFXML(fxml));
+    private void cambiarIdioma(Locale nuevo) {
+        locale = nuevo;
+        try {
+            mostrarVentana();
+        } catch (Exception e) {
+            mostrarError(e, locale);
+        }
     }
 
-    private static Parent loadFXML(String fxml) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
-        return fxmlLoader.load();
+    private static void mostrarError(Throwable error, Locale idioma) {
+        String clave = error instanceof DominioException de ? de.getClave()
+                : error instanceof PersistenciaException pe ? pe.getClave() : "error.general";
+        ResourceBundle bundle = ResourceBundle.getBundle("uptc.i18n.messages", idioma);
+        String mensaje = bundle.containsKey(clave) ? bundle.getString(clave) : bundle.getString("error.general");
+        javafx.scene.control.Alert alerta = new javafx.scene.control.Alert(
+                javafx.scene.control.Alert.AlertType.ERROR);
+        alerta.setTitle(bundle.getString("error.title"));
+        alerta.setHeaderText(bundle.getString("error.header"));
+        alerta.setContentText(mensaje);
+        alerta.showAndWait();
     }
 
     public static void main(String[] args) {
-        launch();
+        launch(args);
     }
-
 }
