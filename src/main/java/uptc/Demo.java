@@ -1,7 +1,7 @@
 package uptc;
 
-import uptc.algorithm.PlanificadorService;
-import uptc.algorithm.PlanificadorServiceImpl;
+import uptc.controller.algorithm.PlanificadorService;
+import uptc.controller.algorithm.PlanificadorServiceImpl;
 import uptc.model.*;
 
 import java.time.LocalDate;

@@ -2,13 +2,13 @@ package uptc.integration;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import uptc.algorithm.PlanificadorServiceImpl;
+import uptc.controller.algorithm.PlanificadorServiceImpl;
 import uptc.exception.DominioException;
 import uptc.model.Actividad;
 import uptc.model.Cronograma;
 import uptc.model.Proyecto;
 import uptc.persistence.JsonProyectoRepository;
-import uptc.service.ProyectoServiceImpl;
+import uptc.controller.ProyectoServiceImpl;
 
 import java.nio.file.Path;
 import java.time.LocalDate;

@@ -1,0 +1,42 @@
+.root {
+    -fx-font-family: "Segoe UI", "Arial", sans-serif;
+    -fx-font-size: 13px;
+    -fx-background-color: #f4f7fb;
+}
+.title {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #16365c;
+}
+.tab-pane > .tab-header-area .tab-header-background {
+    -fx-background-color: #e7edf5;
+}
+.button {
+    -fx-background-radius: 5px;
+    -fx-padding: 7px 13px;
+}
+.table-view, .list-view {
+    -fx-background-radius: 5px;
+    -fx-border-color: #d6deea;
+    -fx-border-radius: 5px;
+}
+.dark-theme {
+    -fx-background-color: #172033;
+    -fx-text-fill: #e2e8f0;
+}
+.dark-theme .label, .dark-theme .tab-label {
+    -fx-text-fill: #e2e8f0;
+}
+.dark-theme .tab-pane > .tab-header-area .tab-header-background {
+    -fx-background-color: #1e293b;
+}
+.dark-theme .table-view, .dark-theme .list-view, .dark-theme .text-field,
+.dark-theme .combo-box, .dark-theme .chart-plot-background {
+    -fx-background-color: #243047;
+    -fx-control-inner-background: #243047;
+    -fx-text-fill: #f8fafc;
+}
+.status-badge {
+    -fx-background-radius: 12px;
+    -fx-padding: 3px 8px;
+}

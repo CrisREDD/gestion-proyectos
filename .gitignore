@@ -1,0 +1,23 @@
+# Build output
+target/
+
+# IDE and local tooling
+.idea/
+*.iml
+.vscode/
+.classpath
+.project
+.settings/
+
+# Local application data
+.gestion-proyectos/
+proyectos.json
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs and temporary files
+*.log
+*.tmp
+*.bak

@@ -1,0 +1,19 @@
+[
+  {
+    "id": "P1",
+    "nombre": "Lanzamiento de producto",
+    "descripcion": "Proyecto de ejemplo para explorar dependencias y cronograma.",
+    "fechaInicio": "2026-01-05",
+    "actividades": [
+      {"id":"A","nombre":"Requisitos","descripcion":null,"duracionDias":3,"responsable":"Ana","estado":"DONE"},
+      {"id":"B","nombre":"Diseño","descripcion":null,"duracionDias":4,"responsable":"Luis","estado":"IN_PROGRESS"},
+      {"id":"C","nombre":"Implementación","descripcion":null,"duracionDias":6,"responsable":"Luis","estado":"TODO"},
+      {"id":"D","nombre":"Pruebas","descripcion":null,"duracionDias":3,"responsable":"Marta","estado":"TODO"}
+    ],
+    "dependencias": [
+      {"predecesora":"A","sucesora":"B"},
+      {"predecesora":"B","sucesora":"C"},
+      {"predecesora":"C","sucesora":"D"}
+    ]
+  }
+]

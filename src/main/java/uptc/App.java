@@ -5,14 +5,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import uptc.algorithm.PlanificadorServiceImpl;
+import uptc.controller.algorithm.PlanificadorServiceImpl;
 import uptc.exception.DominioException;
 import uptc.exception.PersistenciaException;
 import uptc.persistence.JsonProyectoRepository;
-import uptc.service.ProyectoService;
-import uptc.service.ProyectoServiceImpl;
-import uptc.service.ProyectoServiceStub;
-import uptc.ui.MainController;
+import uptc.controller.ProyectoService;
+import uptc.controller.ProyectoServiceImpl;
+import uptc.controller.ProyectoServiceStub;
+import uptc.viewController.MainController;
 
 import java.nio.file.Path;
 import java.util.Locale;
@@ -46,9 +46,9 @@ public class App extends Application {
 
     private void mostrarVentana() throws Exception {
         ResourceBundle bundle = ResourceBundle.getBundle("uptc.i18n.messages", locale);
-        FXMLLoader loader = new FXMLLoader(App.class.getResource("/uptc/ui/main.fxml"), bundle);
+        FXMLLoader loader = new FXMLLoader(App.class.getResource("/uptc/view/main.fxml"), bundle);
         Parent root = loader.load();
-        root.getStylesheets().add(App.class.getResource("/uptc/ui/styles.css").toExternalForm());
+        root.getStylesheets().add(App.class.getResource("/uptc/css/styles.css").toExternalForm());
         MainController controller = loader.getController();
         controller.configure(proyectoService, bundle, this::cambiarIdioma);
         stage.setTitle(bundle.getString("app.title"));

@@ -6,7 +6,9 @@ module uptc {
     requires com.fasterxml.jackson.datatype.jsr310;
 
     opens uptc to javafx.fxml;
-    opens uptc.ui to javafx.fxml;
+    opens uptc.viewController to javafx.fxml;
     exports uptc;
-    exports uptc.ui;
+    exports uptc.viewController;
+    exports uptc.controller;
+    exports uptc.controller.algorithm;
 }

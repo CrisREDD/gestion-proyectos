@@ -79,7 +79,10 @@
                         <goals><goal>check</goal></goals>
                         <configuration>
                             <excludes>
-                                <exclude>uptc/Demo*</exclude>
+                                <exclude>**/Demo*</exclude>
+                                <exclude>**/App*</exclude>
+                                <exclude>**/viewController/**</exclude>
+                                <exclude>**/utils/**</exclude>
                             </excludes>
                             <rules>
                                 <rule>
@@ -104,9 +107,17 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>uptc.Demo</mainClass>
+                            <mainClass>uptc.App</mainClass>
                         </manifest>
                     </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-maven-plugin</artifactId>
+                <version>0.0.8</version>
+                <configuration>
+                    <mainClass>uptc/uptc.App</mainClass>
                 </configuration>
             </plugin>
         </plugins>
